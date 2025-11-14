@@ -1,0 +1,36 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'release/**'
+      - 'hotfix/**'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+      - name: Build and run tests
+        run: mvn -B clean verify
+      - name: Validate Dockerfile syntax
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+      - name: Build Docker image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: ogustavoress/gs-4-worklife-balance:ci
+      - name: CI Status
+        run: echo "CI finalizado com sucesso 🎉"

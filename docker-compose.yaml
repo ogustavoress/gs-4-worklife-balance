@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    image: ogustavoress/gs-4-worklife-balance:latest
+    container_name: gs4-api
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
